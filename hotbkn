@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ROOMS 100
+
+typedef struct {
+    int roomNumber;
+    char guestName[50];
+    int occupied;
+} Room;
+
+void displayMenu() {
+    printf("Hotel Booking System\n");
+    printf("1. Check Room Availability\n");
+    printf("2. Book a Room\n");
+    printf("3. Check-Out\n");
+    printf("4. Exit\n");
+}
+
+void displayRoomStatus(Room rooms[], int roomCount) {
+    printf("\nRoom Status:\n");
+    for (int i = 0; i < roomCount; i++) {
+        printf("Room %d: %s\n", rooms[i].roomNumber, rooms[i].occupied ? rooms[i].guestName : "Available");
+    }
+    printf("\n");
+}
+
+int main() {
+    Room rooms[MAX_ROOMS];
+    int roomCount = 5;  // Number of rooms in the hotel
+
+    // Initialize rooms
+    for (int i = 0; i < roomCount; i++) {
+        rooms[i].roomNumber = i + 1;
+        rooms[i].occupied = 0;
+        strcpy(rooms[i].guestName, "");
+    }
+
+    int choice;
+    do {
+        displayMenu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                displayRoomStatus(rooms, roomCount);
+                break;
+            case 2:
+                int roomNumber;
+                printf("Enter room number to book: ");
+                scanf("%d", &roomNumber);
+                if (roomNumber >= 1 && roomNumber <= roomCount) {
+                    if (rooms[roomNumber - 1].occupied) {
+                        printf("Room %d is already occupied by %s\n", roomNumber, rooms[roomNumber - 1].guestName);
+                    } else {
+                        printf("Enter guest name: ");
+                        scanf("%s", rooms[roomNumber - 1].guestName);
+                        rooms[roomNumber - 1].occupied = 1;
+                        printf("Room %d has been booked for %s\n", roomNumber, rooms[roomNumber - 1].guestName);
+                    }
+                } else {
+                    printf("Invalid room number\n");
+                }
+                break;
+            case 3:
+                int checkoutRoom;
+                printf("Enter room number to check-out: ");
+                scanf("%d", &checkoutRoom);
+                if (checkoutRoom >= 1 && checkoutRoom <= roomCount) {
+                    if (rooms[checkoutRoom - 1].occupied) {
+                        printf("Checking out %s from room %d\n", rooms[checkoutRoom - 1].guestName, checkoutRoom);
+                        rooms[checkoutRoom - 1].occupied = 0;
+                        strcpy(rooms[checkoutRoom - 1].guestName, "");
+                    } else {
+                        printf("Room %d is not occupied\n", checkoutRoom);
+                    }
+                } else {
+                    printf("Invalid room number\n");
+                }
+                break;
+            case 4:
+                printf("Exiting the program\n");
+                break;
+            default:
+                printf("Invalid choice\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
